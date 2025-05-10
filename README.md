@@ -73,4 +73,4 @@ This project uses the following resources:
 - [Google Fonts](https://fonts.google.com/) for beautiful typography
 - [Flat Icons](https://www.flaticon.com/) for handcrafted icons (licensed under CC 3.0 BY)
 - [Next.js](https://nextjs.org/) for the React framework
-- [Template](https://github.com/timlrx/tailwind-nextjs-starter-blog)
+- [Tailwind-Nextjs-Starter-Blog](https://github.com/timlrx/tailwind-nextjs-starter-blog) for Template
