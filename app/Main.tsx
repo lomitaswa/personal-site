@@ -12,7 +12,7 @@ export default function Home({ posts }) {
           Software Engineer 🧑🏻‍💻
         </h2>
         <p className="text-2xl font-[var(--font-cloister)] tracking-wider text-gray-600 dark:text-gray-400">
-          Crafting digital experiences from Bengaluru, India
+          Crafting digital experiences from India
         </p>
         <p className="text-xl font-[var(--font-cloister)] tracking-wider text-gray-600 dark:text-gray-400">
           learn more{' '}
