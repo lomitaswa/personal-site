@@ -9,11 +9,11 @@ interface Project {
 
 const projectsData: Project[] = [
   {
-    title: 'Point4875.com',
+    title: 'Point4875.in',
     description: `Enabling defence aspirants to prepare for SSB WAT online during pandemic.`,
     techstack: `Built using Nuxt.js, Node.js, MongoDB, Vuetify, AWS.`,
     imgSrc: '/static/images/point4875.png',
-    href: 'https://point4875.com',
+    href: 'https://point4875.in',
   },
   {
     title: 'Vidly - Video Rental Back-end Application',
