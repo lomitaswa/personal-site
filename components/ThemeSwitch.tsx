@@ -39,6 +39,9 @@ const ThemeSwitch = () => {
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+    if (typeof window !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(20)
+    }
   }
 
   return (
