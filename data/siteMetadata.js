@@ -10,11 +10,17 @@ const siteMetadata = {
   siteRepo: 'https://github.com/lomitaswa/lomitaswa.github.io',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
+  // Resume is hosted on Google Drive so a new version can be published without
+  // a redeploy. Override per-environment with NEXT_PUBLIC_RESUME_URL, or point
+  // this back at '/static/lomitaswa.pdf' to serve the copy kept in the repo.
+  resumeUrl:
+    process.env.NEXT_PUBLIC_RESUME_URL ||
+    'https://drive.google.com/file/d/11tGfGGz5hisXvB13D5gs3k3tvHEfbAAp/view?usp=sharing',
   email: 'lomitaswa.suna@hotmail.com',
   github: 'https://github.com/lomitaswa',
   x: 'https://x.com/lomitaswa',
   // twitter: 'https://twitter.com/Twitter',
-  linkedin: 'https://www.linkedin.com/in/lomitaswa-suna/',
+  linkedin: 'https://www.linkedin.com/in/lomitaswa',
   instagram: 'https://www.instagram.com/lomitaswa/',
   medium: 'https://medium.com/@lomitaswa.suna',
   locale: 'en-US',

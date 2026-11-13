@@ -78,6 +78,7 @@ export const Blog = defineDocumentType(() => ({
   fields: {
     title: { type: 'string', required: true },
     date: { type: 'date', required: true },
+    tags: { type: 'list', of: { type: 'string' }, default: [] },
     lastmod: { type: 'date' },
     draft: { type: 'boolean' },
     summary: { type: 'string' },
@@ -113,6 +114,8 @@ export const Authors = defineDocumentType(() => ({
     name: { type: 'string', required: true },
     avatar: { type: 'string' },
     occupation: { type: 'string' },
+    /** Short list of focus areas shown under the role on the About page. */
+    specialties: { type: 'list', of: { type: 'string' } },
     company: { type: 'string' },
     email: { type: 'string' },
     twitter: { type: 'string' },

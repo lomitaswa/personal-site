@@ -1,0 +1,46 @@
+---
+title: 'An Order Has Three States, Not One'
+date: '2026-10-21'
+summary: 'Fulfilment, money and audit move independently on an order. Splitting them into three columns is what made cancellation behave.'
+tags: ['NestJS', 'Architecture', 'Ecommerce']
+draft: true
+---
+
+When I started building orders for Rare Resha I had one status column, the way most people start. It held placed, packed, shipped, cancelled, refunded, all in the same field. It took one real cancellation to show why that doesn't hold up.
+
+An order is tracking three different things at once, and they don't move together.
+
+Where the goods are: placed, quality check, packing, picked up, shipped, in transit, out for delivery, delivered.
+
+Where the money is: pending, paid, refund pending, refunded.
+
+And who changed what, which is append-only and never overwritten.
+
+Put those in one column and they start fighting each other. Cancel a paid order and you need to record two separate facts: fulfilment has stopped, and the money hasn't come back yet. One field can only hold one of them. So you add `CANCELLED_REFUND_PENDING`, then you add another combination, and the column slowly becomes the cross product of two things that should have been apart from the start.
+
+Three columns instead. Cancelling writes to the fulfilment one and leaves the others alone. What happens to the money depends on whether any was taken. An order that was never paid for just stays pending, because nothing is owed. One that was paid moves to refund pending, then to refunded once the provider confirms it. Cancellation stops fulfilment. It isn't a payment outcome, and treating it as one is what makes the single-column version collapse.
+
+### Where cancelling is allowed
+
+Only while the saree is still with us. Placed, quality check, packing.
+
+After pickup a courier has the parcel and there is nothing left to cancel. That request gets a 409 pointing at the returns flow instead, because a return means the item physically coming back, and that is a different process with different money attached. Calling it a late cancellation would be pretending the parcel is still on the table.
+
+Those first three states also move freely between each other rather than strictly forward. Someone packing an order who finds a pulled thread has to be able to send it back to quality check. If the only way backwards were cancelling, we would be throwing away sales that swapping in another piece would have saved.
+
+### Why cancel is not a value you can PATCH
+
+This is the part I got wrong first. Cancelled was in the state list like everything else, so the endpoint that advances an order accepted it as just another value.
+
+The trouble is what cancelling actually does. It releases stock and it can owe someone money. Moving an order from quality check to packing does neither of those. Running both through the same call means whatever permission lets a packing screen nudge an order forward is also the permission to issue refunds, and nothing in the code is saying otherwise.
+
+```
+PATCH /orders/{id}/state    advance fulfilment only
+                            rejects CANCELLED outright
+
+POST  /orders/{id}/cancel   stop fulfilment
+                            release the stock
+                            start a refund if one is owed
+```
+
+Two endpoints, two sets of permissions, and the rules can differ where they should. Admins can cancel until the parcel leaves. Customers can only cancel before anyone has touched the order, because once it reaches quality check a person is handling the saree and a self-service click shouldn't throw that work away.

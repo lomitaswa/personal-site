@@ -7,7 +7,8 @@
 /* Core theme configuration */
 @theme {
   /* Font families */
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+  --font-sans:
+    var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* Colors */
@@ -23,6 +24,11 @@
   --color-primary-800: #155e75;
   --color-primary-900: #164e63;
   --color-primary-950: #083344;
+
+  /* Page canvas. A soft, cool off-white that shares the blue-grey hue of the
+     dark-mode gray scale, so the two themes read as a matched pair. Cards stay
+     pure white and lift off this surface instead of dissolving into it. */
+  --color-canvas: oklch(0.971 0.006 258.3);
 
   --color-gray-50: oklch(0.985 0.002 247.839);
   --color-gray-100: oklch(0.967 0.003 264.542);

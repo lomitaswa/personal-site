@@ -1,26 +1,16 @@
-'use client'
-
-import { RoughNotation } from 'react-rough-notation'
+import siteMetadata from '@/data/siteMetadata'
+import { FaArrowRight } from 'react-icons/fa'
 
 export default function ResumeButton() {
   return (
     <a
-      href="/static/lomitaswa.pdf"
+      href={siteMetadata.resumeUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="relative inline-block text-base font-semibold"
-      style={{ zIndex: 1, color: '#f2b75c' }}
+      className="bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-400 group inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors dark:text-gray-900"
     >
-      <RoughNotation
-        type="box"
-        show={true}
-        color="#bae6fd"
-        strokeWidth={3}
-        padding={[6, 16]}
-        animationDuration={1200}
-      >
-        Resume
-      </RoughNotation>
+      Resume
+      <FaArrowRight className="transition-transform duration-200 group-hover:translate-x-0.5" />
     </a>
   )
 }
