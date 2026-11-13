@@ -1,0 +1,101 @@
+---
+title: 'Building the Ultimate Dev Terminal: Tokyo Night Prompt with Zsh & Starship'
+date: '2026-05-17'
+summary: 'How I set up my macOS terminal to show live Git file counters, custom electric cyan folders, and a fast icon-aware file utility.'
+tags: ['Terminal', 'Zsh', 'Starship', 'Web Dev']
+---
+
+I got tired of the stock macOS terminal look, so I spent some time overhauling my setup. I wanted something clean, minimal, and highly visual that gives me project context at a glance.
+
+The result is a clean **Tokyo Night Cyberpunk** single-line prompt paired with a custom file tree explorer that fits my coding workflow perfectly.
+
+---
+
+### How It Looks
+
+Here is my active workspace layout when browsing files and tracking Git repository states:
+
+![My custom Tokyo Night terminal setup](/images/terminal-preview.png)
+
+---
+
+## The Design Palette
+
+Every color serves a precise data parsing purpose so I don't get overwhelmed by text:
+
+- **Username:** Rendered in a calm, professional Slate Blue (`#7aa2f7`).
+- **Active Directory:** Highlighted in bold Electric Cyan (`#7dcfff`) so paths are instantly visible.
+- **Git Status:** Wrapped in soft Mint Green (`#9ece6a`) with customized numeric counters tracking **Staged (`+`)**, **Modified (`!`)**, and **Untracked (`?`)** files in real-time.
+
+---
+
+## One-Click Setup Script
+
+Instead of installing packages and copying dotfiles manually, I bundled the entire toolchain into a simple automation script. It installs `starship` and `eza` via Homebrew, writes the layout files, and injects clean terminal theme color overrides.
+
+```bash
+#!/bin/bash
+set -e
+
+# Install dependencies if they are missing
+command -v brew >/dev/null || { echo "Homebrew required."; exit 1; }
+command -v starship >/dev/null || brew install starship
+command -v eza >/dev/null || brew install eza
+
+mkdir -p "$HOME/.config"
+
+# 1. Build Tokyo Night Starship Configuration
+cat << 'EOF' > "$HOME/.config/starship.toml"
+format = "$username$directory$git_branch$git_status$character"
+add_newline = false
+
+[username]
+show_always = true
+format = "[$user](bold #7aa2f7) "
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+format = "in [$path](bold #7dcfff) "
+
+[git_branch]
+symbol = " "
+format = "on [$symbol$branch](bold #9ece6a) "
+
+[git_status]
+format = "([\\[$all_status$ahead_behind\\]](bold #bb9af7) )"
+staged = '[+$count](bold #9ece6a) '
+modified = '[!$count](bold #e0af68) '
+untracked = '[?$count](bold #f7768e) '
+deleted = '[✘$count](bold #f7768e) '
+
+[character]
+success_symbol = "[❯](bold #bb9af7) "
+error_symbol = "[▶](bold #f7768e) "
+EOF
+
+# 2. Inject Environment Variables and Aliases to .zshrc
+# (Bypassing MDX parser bug by breaking up the text declarations)
+cat << 'EOF' >> "$HOME/.zshrc"
+
+# Custom Tokyo Night File Metrics Configuration
+env_exa="di=1;36:fi=0:ex=1;35:ln=1;35:da=38;5;244:uu=38;5;246:gu=38;5;246:sn=38;5;246:sb=38;5;246:ur=38;5;61:uw=38;5;61:ux=38;5;61:gr=38;5;61:gw=38;5;61:gx=38;5;61"
+export EXA_COLORS=$env_exa
+
+# Shorthand alias to trigger advanced directory layouts
+alias full-ls="eza --icons --git --long --header --group-directories-first --color=always --color-scale=all --total-size"
+EOF
+
+# Load the initializers safely
+grep -q "starship init" "$HOME/.zshrc" || echo 'eval "$(starship init zsh)"' >> "$HOME/.zshrc"
+
+echo "✨ System profile configured! Restart your terminal to see it."
+exec zsh
+```
+
+## Key Workflow Upgrades
+
+- **Live Git Counters:** Instead of constantly typing `git status`, my prompt tracks repository updates on every keystroke: `lomitaswa in red-soul on  main [?13] ❯`
+- **The `full-ls` Command:** Standard system tools mix terrible default colors. This custom command cleans up timestamps into a muted slate gray, locks directory layouts to electric cyan, and handles true recursive size calculations for folders.
+
+Feel free to grab the setup script, customize the hex codes to match your code editor theme, and run it!
